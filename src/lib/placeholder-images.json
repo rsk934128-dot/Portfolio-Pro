@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "project-nexus",
+      "description": "Screenshot of the Nexus collaboration platform dashboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MHx8fHwxNzY5MjkyNzAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dashboard interface"
+    },
+    {
+      "id": "project-portfolio",
+      "description": "Screenshot of a personal portfolio website.",
+      "imageUrl": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0Zm9saW8lMjB3ZWJzaXRlfGVufDB8fHx8MTc2OTMwMDI2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portfolio website"
+    },
+    {
+      "id": "project-payment",
+      "description": "Screenshot of a payment dashboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1603940516962-4976f0d44a19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwYXltZW50JTIwZGFzaGJvYXJkfGVufDB8fHx8MTc2OTMyMjM4MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "payment dashboard"
+    },
+    {
+      "id": "profile-pic",
+      "description": "Profile picture of Muskan Akram.",
+      "imageUrl": "https://images.unsplash.com/photo-1592621385612-4d7129426394?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2OTMxNDAwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    }
+  ]
 }

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/screenshots/hero-banner.png" />
+  <img src="https://picsum.photos/seed/hero/1600/600" />
 </p>
 
 <p align="center">
@@ -62,14 +62,14 @@ Built-in AI tools that supercharge content creation:
 
 ### 🏠 Portfolio Homepage
 
-![Homepage](./public/screenshots/homepage.png)
+![Homepage](https://picsum.photos/seed/homepage/1200/800)
 
 ---
 
 ### 📝 Blog System
 
-![Blog Listing](./public/screenshots/blog-list.png)
-![Blog Post](./public/screenshots/blog-post.png)
+![Blog Listing](https://picsum.photos/seed/bloglist/1200/800)
+![Blog Post](https://picsum.photos/seed/blogpost/1200/800)
 
 ---
 
@@ -77,19 +77,19 @@ Built-in AI tools that supercharge content creation:
 
 SEO generation, summaries, auto-tagging, topic ideas and one-click publishing.
 
-![AI Assistant](./public/screenshots/ai-blog-assistant.png)
+![AI Assistant](https://picsum.photos/seed/ai/1200/800)
 
 ---
 
 ### 💡 Topic Suggestions Panel
 
-![Topic Ideas](./public/screenshots/topic-ideas.png)
+![Topic Ideas](https://picsum.photos/seed/topics/1200/800)
 
 ---
 
 ### 🌟 Testimonials Carousel
 
-![Testimonials](./public/screenshots/testimonials.png)
+![Testimonials](https://picsum.photos/seed/testimonials/1200/800)
 
 ---
 
@@ -97,7 +97,7 @@ SEO generation, summaries, auto-tagging, topic ideas and one-click publishing.
 
 Interactive visitor assistant powered by Firestore + AI.
 
-![Chatbot](./public/screenshots/chatbot.png)
+![Chatbot](https://picsum.photos/seed/chatbot/1200/800)
 
 ---
 
@@ -254,7 +254,7 @@ npm run dev
 The AI Blog Assistant works through server actions, prompt-driven generation, and Firestore write operations. The visual below outlines the data flow from the user to the backend services.
 
 <p align="center">
-  <img src="./public/screenshots/architecture.png" alt="Architecture Diagram" />
+  <img src="https://picsum.photos/seed/arch/1200/800" alt="Architecture Diagram" />
 </p>
 
 Key components include:

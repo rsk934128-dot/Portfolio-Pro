@@ -51,6 +51,49 @@ Built-in AI tools that supercharge content creation:
 
 ---
 
+## 🖼️ Screenshots & Live Preview
+
+### 🏠 Portfolio Homepage
+
+![Homepage](./public/screenshots/homepage.png)
+
+---
+
+### 📝 Blog System
+
+![Blog Listing](./public/screenshots/blog-list.png)
+![Blog Post](./public/screenshots/blog-post.png)
+
+---
+
+### 🤖 AI Blog Assistant
+
+SEO generation, summaries, auto-tagging, topic ideas and one-click publishing.
+
+![AI Assistant](./public/screenshots/ai-blog-assistant.png)
+
+---
+
+### 💡 Topic Suggestions Panel
+
+![Topic Ideas](./public/screenshots/topic-ideas.png)
+
+---
+
+### 🌟 Testimonials Carousel
+
+![Testimonials](./public/screenshots/testimonials.png)
+
+---
+
+### 💬 AI Portfolio Chatbot *(Coming Soon)*
+
+Interactive visitor assistant powered by Firestore + AI.
+
+![Chatbot](./public/screenshots/chatbot.png)
+
+---
+
 ## 🛠️ Tech Stack
 
 * **Frontend:** Next.js 14, React, TypeScript

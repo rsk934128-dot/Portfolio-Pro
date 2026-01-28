@@ -1,4 +1,11 @@
-# 🚀 AI-Powered Portfolio & Blog Platform
+<p align="center">
+  <img src="./public/screenshots/hero-banner.png" />
+</p>
+
+<p align="center">
+  <b>AI-Powered Portfolio & Blogging Platform</b><br/>
+  Built with Next.js • Firebase • Google Gemini (Genkit)
+</p>
 
 A modern, dynamic personal portfolio and blogging platform built with **Next.js**, **React**, **ShadCN UI**, and **Firebase**, enhanced with powerful **AI-driven blogging tools** including SEO generation, topic suggestions, auto-tagging, and one-click publishing.
 
@@ -244,17 +251,16 @@ npm run dev
 
 ## 🧠 AI Architecture
 
-The AI Blog Assistant works through:
+The AI Blog Assistant works through server actions, prompt-driven generation, and Firestore write operations. The visual below outlines the data flow from the user to the backend services.
 
-* Server actions / API routes
-* Prompt-driven generation
-* Firestore write operations
-* UI dashboard tabs:
+<p align="center">
+  <img src="./public/screenshots/architecture.png" alt="Architecture Diagram" />
+</p>
 
-  * SEO Generator
-  * Topic Ideas
-  * Tag Generator
-  * Save Post
+Key components include:
+* **Frontend:** Next.js with React and ShadCN UI.
+* **Backend:** Firebase for data (Firestore) and authentication.
+* **AI:** Google Gemini via Genkit for all generative features.
 
 ---
 

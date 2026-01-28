@@ -1,7 +1,31 @@
+import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
-import { skills } from "@/lib/data";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export function SkillsSection() {
+const SkillsCategorySkeleton = () => (
+    <div>
+        <Skeleton className="h-8 w-1/2 mx-auto mb-6" />
+        <div className="flex flex-wrap justify-center gap-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-9 w-24 rounded-full" />
+            ))}
+        </div>
+    </div>
+);
+
+export function SkillsSection({ skills, isLoading }: { skills: any[] | null, isLoading: boolean }) {
+  const skillsByCategory = useMemo(() => {
+    if (!skills) return {};
+    return skills.reduce((acc: { [key: string]: string[] }, skill: any) => {
+      const { category, name } = skill;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(name);
+      return acc;
+    }, {});
+  }, [skills]);
+
   return (
     <section id="skills" className="py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
@@ -14,7 +38,8 @@ export function SkillsSection() {
           </p>
         </div>
         <div className="space-y-10">
-          {Object.entries(skills).map(([category, skillList]) => (
+          {isLoading && Array.from({ length: 3 }).map((_, i) => <SkillsCategorySkeleton key={i} />)}
+          {!isLoading && Object.entries(skillsByCategory).map(([category, skillList]) => (
             <div key={category}>
               <h3 className="font-headline text-2xl font-semibold mb-6 text-center text-primary">
                 {category}

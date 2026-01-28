@@ -13,7 +13,7 @@ const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
-export function Header() {
+export function Header({ profile, skills }: { profile: any, skills: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <PersonalizationTool>
+        <PersonalizationTool profile={profile} skills={skills}>
             <Button>
                 <Sparkles className="mr-2" />
                 Personalize

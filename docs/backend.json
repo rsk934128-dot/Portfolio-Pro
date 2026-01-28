@@ -6,38 +6,64 @@
       "type": "object",
       "description": "Represents a user's profile on the portfolio website.",
       "properties": {
-        "id": {
+        "name": {
           "type": "string",
-          "description": "Unique identifier for the user profile."
+          "description": "The full name of the user."
+        },
+        "title": {
+          "type": "string",
+          "description": "The professional title of the user."
         },
         "bio": {
           "type": "string",
           "description": "A short biography of the user."
         },
-        "skills": {
-          "type": "string",
-          "description": "A comma separated string of skills the user has"
+        "contact": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "social": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": ["name", "url"]
+              }
+            }
+          },
+          "required": ["email", "social"]
         },
-        "contactEmail": {
-          "type": "string",
-          "description": "User's contact email address.",
-          "format": "email"
-        },
-        "contactPhone": {
-          "type": "string",
-          "description": "User's contact phone number."
-        },
-        "contactLinkedIn": {
-          "type": "string",
-          "description": "URL to the user's LinkedIn profile.",
-          "format": "uri"
+        "profilePicture": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "imageHint": {
+              "type": "string"
+            }
+          },
+          "required": ["imageUrl", "imageHint"]
         }
       },
       "required": [
-        "id",
+        "name",
+        "title",
         "bio",
-        "skills",
-        "contactEmail"
+        "contact",
+        "profilePicture"
       ]
     },
     "Project": {
@@ -46,10 +72,6 @@
       "type": "object",
       "description": "Represents a project showcased on the portfolio.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the project."
-        },
         "title": {
           "type": "string",
           "description": "Title of the project."
@@ -58,27 +80,40 @@
           "type": "string",
           "description": "Detailed description of the project."
         },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL to the project's image.",
-          "format": "uri"
+        "image": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "imageHint": {
+              "type": "string"
+            }
+          },
+          "required": ["imageUrl"]
         },
         "liveUrl": {
           "type": "string",
           "description": "URL to the live project (if available).",
           "format": "uri"
         },
-        "repositoryUrl": {
+        "repoUrl": {
           "type": "string",
           "description": "URL to the project's code repository (e.g., GitHub).",
           "format": "uri"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
-        "id",
         "title",
         "description",
-        "imageUrl"
+        "image"
       ]
     },
     "Skill": {
@@ -87,24 +122,18 @@
       "type": "object",
       "description": "Represents a skill listed in the portfolio.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the skill."
-        },
         "name": {
           "type": "string",
           "description": "Name of the skill (e.g., React, JavaScript)."
         },
-        "level": {
-          "type": "number",
-          "description": "Proficiency level of the skill (e.g., 1-5).",
-          "format": "number"
+        "category": {
+          "type": "string",
+          "description": "Category of the skill (e.g., 'Languages & Frameworks')."
         }
       },
       "required": [
-        "id",
         "name",
-        "level"
+        "category"
       ]
     },
     "Certification": {
@@ -113,29 +142,29 @@
       "type": "object",
       "description": "Represents a certification earned by the user.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the certification."
-        },
-        "name": {
+        "title": {
           "type": "string",
           "description": "Name of the certification."
         },
-        "authority": {
+        "issuer": {
           "type": "string",
           "description": "Issuing authority of the certification (e.g., Coursera, edX)."
         },
-        "validationUrl": {
+        "date": {
+          "type": "string",
+          "description": "Date the certification was earned."
+        },
+        "url": {
           "type": "string",
           "description": "URL to validate the certification's authenticity.",
           "format": "uri"
         }
       },
       "required": [
-        "id",
-        "name",
-        "authority",
-        "validationUrl"
+        "title",
+        "issuer",
+        "date",
+        "url"
       ]
     },
     "ContactFormSubmission": {

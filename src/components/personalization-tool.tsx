@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { profile, skills as currentSkillsData } from "@/lib/data";
 import { getPersonalizationSuggestions } from "@/app/actions";
 import type { PersonalizePortfolioOutput } from "@/ai/flows/ai-powered-personalization";
 import { Separator } from "./ui/separator";
@@ -42,12 +41,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function PersonalizationTool({ children }: { children: React.ReactNode }) {
+export function PersonalizationTool({ children, profile, skills }: { children: React.ReactNode, profile: any, skills: any[] | null }) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const [suggestions, setSuggestions] = useState<PersonalizePortfolioOutput | null>(null);
 
-  const currentSkillsString = Object.values(currentSkillsData).flat().join(', ');
+  const currentSkillsString = useMemo(() => {
+    if (!skills) return "";
+    return skills.map(s => s.name).join(', ');
+  }, [skills]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -57,6 +59,15 @@ export function PersonalizationTool({ children }: { children: React.ReactNode })
   });
 
   const onSubmit = (values: FormValues) => {
+    if (!profile || !currentSkillsString) {
+      toast({
+        variant: "destructive",
+        title: "An error occurred",
+        description: "Profile data is not available yet. Please wait and try again.",
+      });
+      return;
+    }
+
     startTransition(async () => {
       try {
         const result = await getPersonalizationSuggestions({

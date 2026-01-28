@@ -9,10 +9,33 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Github, ExternalLink } from "lucide-react";
-import { projects } from "@/lib/data";
 
-export function ProjectsSection() {
+const ProjectCardSkeleton = () => (
+    <Card className="flex flex-col overflow-hidden">
+        <Skeleton className="aspect-video w-full" />
+        <CardHeader>
+            <Skeleton className="h-6 w-3/4" />
+            <div className="flex flex-wrap gap-2 pt-2">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-5 w-20" />
+            </div>
+        </CardHeader>
+        <CardContent className="flex-grow space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+        </CardContent>
+        <CardFooter className="flex justify-end gap-2">
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-28" />
+        </CardFooter>
+    </Card>
+);
+
+
+export function ProjectsSection({ projects, isLoading }: { projects: any[] | null, isLoading: boolean }) {
   return (
     <section id="projects" className="py-16 md:py-24 bg-secondary/50">
       <div className="container mx-auto px-4 md:px-6">
@@ -25,9 +48,10 @@ export function ProjectsSection() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
+          {isLoading && Array.from({ length: 3 }).map((_, i) => <ProjectCardSkeleton key={i} />)}
+          {!isLoading && projects?.map((project) => (
             <Card
-              key={project.title}
+              key={project.id}
               className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
               {project.image && (
@@ -46,7 +70,7 @@ export function ProjectsSection() {
                   {project.title}
                 </CardTitle>
                 <div className="flex flex-wrap gap-2 pt-2">
-                  {project.tags.map((tag) => (
+                  {project.tags?.map((tag: string) => (
                     <Badge key={tag} variant="secondary">
                       {tag}
                     </Badge>

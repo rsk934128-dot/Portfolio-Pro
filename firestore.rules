@@ -1,6 +1,7 @@
 /**
  * This ruleset enforces a strict user-ownership model for a personal portfolio website.
  * The core philosophy is to isolate user data, ensuring that users can only access and manage their own information.
+ * All user-specific data is publicly readable to allow for a public portfolio, but writes are strictly controlled.
  *
  * Core Philosophy:
  * Data is segregated into two main categories: private user-owned data and public/semi-public application data.
@@ -19,7 +20,7 @@
  * - /testimonials: A public collection for testimonials.
  *
  * Key Security Decisions:
- * - Strict Ownership: All data under `/users/{userId}` is accessible only by the authenticated user whose UID matches `{userId}`. This prevents users from viewing or modifying each other's data.
+ * - Public Reads, Private Writes: All data under `/users/{userId}` is publicly readable, but write access is restricted to the authenticated user whose UID matches `{userId}`.
  * - No User Listing: It is not possible to list all documents in the `/users` collection, protecting user privacy.
  * - Write-Only Contact Form: Anyone can submit to the `/contactFormSubmissions` collection, but no one can read, update, or delete submissions from the client, protecting the submitter's privacy.
  * - Public Testimonials: The `/testimonials` collection is publicly readable by anyone, but writes are disabled by default until a secure mechanism (like admin roles or ownership fields) is implemented.
@@ -42,89 +43,90 @@ service cloud.firestore {
 
     /**
      * Checks if the authenticated user's UID matches the provided userId.
-     * This is the primary function for enforcing data ownership.
+     * This is the primary function for enforcing data ownership for write operations.
      */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
     /**
-     * Checks for ownership on an existing document.
+     * Checks for ownership on an existing document for write operations.
      * CRITICAL: Used for all update and delete operations to prevent modifying non-existent data.
      */
     function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
+      return isOwner(userId) && exists(/databases/$(database)/documents/users/$(userId));
     }
 
     /**
-     * @description Rules for user profile documents. A user can create their own profile and has full control over it. No other user can access it.
+     * @description Rules for user profile documents. A user's profile is public, but only they can edit it.
      * @path /users/{userId}
-     * @allow A signed-in user (auth.uid: 'user123') can (create) their own profile at `/users/user123`.
-     * @deny A signed-in user (auth.uid: 'user456') cannot (get) or (update) the profile at `/users/user123`.
-     * @principle Restricts access to a user's own data tree and enforces relational integrity on creation.
+     * @allow Anyone can (get) a user profile.
+     * @allow A signed-in user (auth.uid: 'user123') can (create) and (update) their own profile at `/users/user123`.
+     * @deny A signed-in user (auth.uid: 'user456') cannot (update) the profile at `/users/user123`.
+     * @principle Restricts write access to a user's own data tree while allowing public reads.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
+      allow get: if true;
       allow list: if false; // Deny listing all users for privacy.
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
 
       /**
-       * @description Rules for a user's projects. Only the owner can manage their own projects.
+       * @description Rules for a user's projects. Publicly readable, owner-only writes.
        * @path /users/{userId}/projects/{projectId}
-       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/projects`.
-       * @deny User 'user456' is denied all access to documents under `/users/user123/projects`.
+       * @allow Anyone can (get) or (list) projects.
+       * @deny User 'user456' cannot (create) a project for user 'user123'.
        * @principle Enforces document ownership within a user's private subcollection.
        */
       match /projects/{projectId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if true;
+        allow list: if true;
         allow create: if isOwner(userId);
         allow update: if isExistingOwner(userId);
         allow delete: if isExistingOwner(userId);
       }
 
       /**
-       * @description Rules for a user's skills. Only the owner can manage their own skills.
+       * @description Rules for a user's skills. Publicly readable, owner-only writes.
        * @path /users/{userId}/skills/{skillId}
-       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/skills`.
-       * @deny User 'user456' is denied all access to documents under `/users/user123/skills`.
+       * @allow Anyone can (get) or (list) skills.
+       * @deny User 'user456' cannot (create) a skill for user 'user123'.
        * @principle Enforces document ownership within a user's private subcollection.
        */
       match /skills/{skillId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if true;
+        allow list: if true;
         allow create: if isOwner(userId);
         allow update: if isExistingOwner(userId);
         allow delete: if isExistingOwner(userId);
       }
 
       /**
-       * @description Rules for a user's certifications. Only the owner can manage their own certifications.
+       * @description Rules for a user's certifications. Publicly readable, owner-only writes.
        * @path /users/{userId}/certifications/{certificationId}
-       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/certifications`.
-       * @deny User 'user456' is denied all access to documents under `/users/user123/certifications`.
+       * @allow Anyone can (get) or (list) certifications.
+       * @deny User 'user456' cannot (create) a certification for user 'user123'.
        * @principle Enforces document ownership within a user's private subcollection.
        */
       match /certifications/{certificationId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if true;
+        allow list: if true;
         allow create: if isOwner(userId);
         allow update: if isExistingOwner(userId);
         allow delete: if isExistingOwner(userId);
       }
 
       /**
-       * @description Rules for a user's blog posts. Only the owner can manage their own posts.
+       * @description Rules for a user's blog posts. Publicly readable, owner-only writes.
        * @path /users/{userId}/blogPosts/{blogPostId}
-       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/blogPosts`.
-       * @deny User 'user456' is denied all access to documents under `/users/user123/blogPosts`.
+       * @allow Anyone can (get) or (list) blog posts.
+       * @deny User 'user456' cannot (create) a blog post for user 'user123'.
        * @principle Enforces document ownership within a user's private subcollection.
        */
       match /blogPosts/{blogPostId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if true;
+        allow list: if true;
         allow create: if isOwner(userId);
         allow update: if isExistingOwner(userId);
         allow delete: if isExistingOwner(userId);

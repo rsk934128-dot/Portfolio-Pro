@@ -1,6 +1,7 @@
 "use server";
 
 import { personalizePortfolio, type PersonalizePortfolioInput, type PersonalizePortfolioOutput } from "@/ai/flows/ai-powered-personalization";
+import { getBlogSuggestions as getBlogSuggestionsFlow, type BlogSuggestionsInput, type BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
 
 export async function getPersonalizationSuggestions(
   input: PersonalizePortfolioInput
@@ -12,5 +13,18 @@ export async function getPersonalizationSuggestions(
     console.error("Error in AI personalization flow:", error);
     // Return a structured error or re-throw
     throw new Error("Failed to get personalization suggestions.");
+  }
+}
+
+export async function getBlogSuggestions(
+  input: BlogSuggestionsInput
+): Promise<BlogSuggestionsOutput> {
+  try {
+    const result = await getBlogSuggestionsFlow(input);
+    return result;
+  } catch (error)
+  {
+    console.error("Error in AI blog suggestion flow:", error);
+    throw new Error("Failed to get blog suggestions.");
   }
 }

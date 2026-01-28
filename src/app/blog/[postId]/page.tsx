@@ -1,7 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { doc } from "firebase/firestore";
-import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { useFirestore, useDoc } from "@/firebase";
 import { portfolioOwnerId } from "@/lib/config";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -14,10 +15,10 @@ import { Calendar, Clock } from "lucide-react";
 export default function BlogPostPage({ params }: { params: { postId: string } }) {
   const firestore = useFirestore();
 
-  const postRef = useMemoFirebase(() => doc(firestore, 'users', portfolioOwnerId, 'blogPosts', params.postId), [firestore, params.postId]);
+  const postRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId, 'blogPosts', params.postId), [firestore, params.postId]);
   const { data: post, isLoading: isPostLoading } = useDoc(postRef);
 
-  const userRef = useMemoFirebase(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
+  const userRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
   const { data: profileData, isLoading: isProfileLoading } = useDoc(userRef);
 
   const isLoading = isPostLoading || isProfileLoading;

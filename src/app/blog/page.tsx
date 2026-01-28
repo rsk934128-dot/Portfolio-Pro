@@ -1,7 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { doc, collection } from "firebase/firestore";
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from "@/firebase";
+import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { portfolioOwnerId } from "@/lib/config";
 import { BlogPostCard } from "@/components/blog-post-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,10 +24,10 @@ const BlogPostCardSkeleton = () => (
 export default function BlogPage() {
   const firestore = useFirestore();
 
-  const userRef = useMemoFirebase(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
+  const userRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
   const { data: profileData, isLoading: isProfileLoading } = useDoc(userRef);
 
-  const blogPostsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'blogPosts'), [firestore]);
+  const blogPostsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'blogPosts'), [firestore]);
   const { data: blogPosts, isLoading: arePostsLoading } = useCollection(blogPostsRef);
 
   const isLoading = isProfileLoading || arePostsLoading;

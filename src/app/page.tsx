@@ -1,7 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { doc, collection } from "firebase/firestore";
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from "@/firebase";
+import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { portfolioOwnerId } from "@/lib/config";
 
 import { Header } from "@/components/layout/header";
@@ -17,22 +18,22 @@ import { BlogSection } from "@/components/sections/blog-section";
 export default function Home() {
   const firestore = useFirestore();
 
-  const userRef = useMemoFirebase(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
+  const userRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
   const { data: profileData, isLoading: isProfileLoading } = useDoc(userRef);
 
-  const projectsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'projects'), [firestore]);
+  const projectsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'projects'), [firestore]);
   const { data: projectsData, isLoading: areProjectsLoading } = useCollection(projectsRef);
 
-  const skillsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'skills'), [firestore]);
+  const skillsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'skills'), [firestore]);
   const { data: skillsData, isLoading: areSkillsLoading } = useCollection(skillsRef);
   
-  const certificationsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'certifications'), [firestore]);
+  const certificationsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'certifications'), [firestore]);
   const { data: certificationsData, isLoading: areCertificationsLoading } = useCollection(certificationsRef);
 
-  const testimonialsRef = useMemoFirebase(() => collection(firestore, 'testimonials'), [firestore]);
+  const testimonialsRef = useMemo(() => collection(firestore, 'testimonials'), [firestore]);
   const { data: testimonialsData, isLoading: areTestimonialsLoading } = useCollection(testimonialsRef);
 
-  const blogPostsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'blogPosts'), [firestore]);
+  const blogPostsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'blogPosts'), [firestore]);
   const { data: blogPostsData, isLoading: areBlogPostsLoading } = useCollection(blogPostsRef);
 
   return (

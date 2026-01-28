@@ -276,6 +276,10 @@
             }
           },
           "required": ["imageUrl"]
+        },
+        "viewCount": {
+          "type": "number",
+          "description": "The number of times the blog post has been viewed."
         }
       },
       "required": [

@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
-import { doc } from "firebase/firestore";
-import { useFirestore, useDoc } from "@/firebase";
+import { useMemo, useEffect } from "react";
+import { doc, increment } from "firebase/firestore";
+import { useFirestore, useDoc, updateDocumentNonBlocking } from "@/firebase";
 import { portfolioOwnerId } from "@/lib/config";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -20,6 +20,19 @@ export default function BlogPostPage({ params }: { params: { postId: string } })
 
   const userRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
   const { data: profileData, isLoading: isProfileLoading } = useDoc(userRef);
+  
+  // Increment view count logic
+  useEffect(() => {
+    if (postRef) {
+      // Use sessionStorage to only increment the view count once per session
+      const viewedKey = `viewed_post_${params.postId}`;
+      if (!sessionStorage.getItem(viewedKey)) {
+        updateDocumentNonBlocking(postRef, { viewCount: increment(1) });
+        sessionStorage.setItem(viewedKey, 'true');
+      }
+    }
+  }, [postRef, params.postId]);
+
 
   const isLoading = isPostLoading || isProfileLoading;
 

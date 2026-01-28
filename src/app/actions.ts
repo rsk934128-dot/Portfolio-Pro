@@ -3,6 +3,7 @@
 import { personalizePortfolio, type PersonalizePortfolioInput, type PersonalizePortfolioOutput } from "@/ai/flows/ai-powered-personalization";
 import { getBlogSuggestions as getBlogSuggestionsFlow, type BlogSuggestionsInput, type BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
 import { getTopicSuggestions as getTopicSuggestionsFlow, type TopicSuggestionsInput, type TopicSuggestionsOutput } from "@/ai/flows/suggest-blog-topics";
+import { getBlogPerformanceAnalysis as getBlogPerformanceAnalysisFlow, type BlogPerformanceAnalysisInput, type BlogPerformanceAnalysisOutput } from "@/ai/flows/analyze-blog-performance";
 
 export async function getPersonalizationSuggestions(
   input: PersonalizePortfolioInput
@@ -39,5 +40,17 @@ export async function getTopicSuggestions(
     } catch (error) {
         console.error("Error in AI topic suggestion flow:", error);
         throw new Error("Failed to get topic suggestions.");
+    }
+}
+
+export async function getBlogPerformanceAnalysis(
+    input: BlogPerformanceAnalysisInput
+): Promise<BlogPerformanceAnalysisOutput> {
+    try {
+        const result = await getBlogPerformanceAnalysisFlow(input);
+        return result;
+    } catch (error) {
+        console.error("Error in AI blog performance analysis flow:", error);
+        throw new Error("Failed to get blog performance analysis.");
     }
 }

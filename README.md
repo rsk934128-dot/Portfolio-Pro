@@ -57,7 +57,7 @@ Built-in AI tools that supercharge content creation:
 * **UI:** ShadCN UI, TailwindCSS
 * **Backend:** Firebase Firestore
 * **Auth (optional):** Firebase Auth
-* **AI Integration:** OpenAI API / LLM Provider
+* **AI Integration:** Google AI (Gemini) via Genkit
 * **Hosting:** Vercel / Firebase Hosting
 
 ---
@@ -186,7 +186,7 @@ NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 
-OPENAI_API_KEY=
+GEMINI_API_KEY=
 ```
 
 ---

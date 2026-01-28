@@ -11,6 +11,7 @@ const navLinks = [
   { name: "Projects", href: "#projects" },
   { name: "Certifications", href: "#certifications" },
   { name: "Testimonials", href: "#testimonials" },
+  { name: "Blog", href: "/blog" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -35,7 +36,7 @@ export function Header({ profile, skills }: { profile: any, skills: any }) {
       )}
     >
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <a href="#" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <Bot className="h-6 w-6 text-primary" />
           <span className="font-headline text-lg font-bold text-foreground">
             Portfolio Pro

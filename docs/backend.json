@@ -241,13 +241,13 @@
       "type": "object",
       "description": "Represents a blog post or article.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the blog post."
-        },
         "title": {
           "type": "string",
           "description": "Title of the blog post."
+        },
+        "summary": {
+          "type": "string",
+          "description": "A short summary of the blog post."
         },
         "content": {
           "type": "string",
@@ -259,12 +259,28 @@
           "format": "date-time"
         },
         "tags": {
-          "type": "string",
-          "description": "Tags associated with the blog post (comma-separated)."
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "imageHint": {
+              "type": "string"
+            }
+          },
+          "required": ["imageUrl"]
         }
       },
       "required": [
         "title",
+        "summary",
         "content",
         "publicationDate"
       ]

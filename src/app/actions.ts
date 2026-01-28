@@ -4,7 +4,7 @@ import { personalizePortfolio, type PersonalizePortfolioInput, type PersonalizeP
 import { getBlogSuggestions as getBlogSuggestionsFlow, type BlogSuggestionsInput, type BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
 import { getTopicSuggestions as getTopicSuggestionsFlow, type TopicSuggestionsInput, type TopicSuggestionsOutput } from "@/ai/flows/suggest-blog-topics";
 import { getBlogPerformanceAnalysis as getBlogPerformanceAnalysisFlow, type BlogPerformanceAnalysisInput, type BlogPerformanceAnalysisOutput } from "@/ai/flows/analyze-blog-performance";
-import { getChatbotResponse as getChatbotResponseFlow, type ChatbotInput } from "@/ai/flows/portfolio-chatbot";
+import { getChatbotResponse as getChatbotResponseFlow, type ChatbotInput, type ChatbotOutput } from "@/ai/flows/portfolio-chatbot";
 
 
 export async function getPersonalizationSuggestions(
@@ -59,7 +59,7 @@ export async function getBlogPerformanceAnalysis(
 
 export async function getChatbotResponse(
     input: ChatbotInput
-): Promise<string> {
+): Promise<ChatbotOutput> {
     try {
         const result = await getChatbotResponseFlow(input);
         return result;

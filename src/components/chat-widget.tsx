@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from './ui/skeleton';
+import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+
 
 interface Message {
     role: 'user' | 'model';
@@ -27,6 +29,7 @@ export function ChatWidget() {
     const [isResponding, startTransition] = useTransition();
     const { toast } = useToast();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const [sessionId, setSessionId] = useState<string | null>(null);
 
     // 1. Fetch all portfolio data needed for context
     const firestore = useFirestore();
@@ -64,24 +67,62 @@ export function ChatWidget() {
         e.preventDefault();
         if (!input.trim() || isResponding || !portfolioContext) return;
 
-        const newMessages: Message[] = [...messages, { role: 'user', content: input }];
+        const userMessage: Message = { role: 'user', content: input };
+        const newMessages: Message[] = [...messages, userMessage];
         setMessages(newMessages);
         setInput('');
 
         startTransition(async () => {
             try {
-                const response = await getChatbotResponse({
-                    messages: newMessages,
+                let currentSessionId = sessionId;
+                
+                // 1. Create session if it doesn't exist
+                if (!currentSessionId) {
+                    const sessionRef = await addDocumentNonBlocking(collection(firestore, 'chatSessions'), {
+                        startTime: new Date().toISOString(),
+                        userType: 'visitor',
+                    });
+                    currentSessionId = sessionRef.id;
+                    setSessionId(currentSessionId);
+                }
+
+                // 2. Save user message
+                addDocumentNonBlocking(collection(firestore, 'chatSessions', currentSessionId, 'messages'), {
+                    ...userMessage,
+                    timestamp: new Date().toISOString()
+                });
+
+                // 3. Get AI response
+                const result = await getChatbotResponse({
+                    messages: newMessages.map(({role, content}) => ({role, content})),
                     portfolioContext,
                 });
-                setMessages(prev => [...prev, { role: 'model', content: response }]);
+                
+                const aiMessage: Message = { role: 'model', content: result.response };
+                setMessages(prev => [...prev, aiMessage]);
+
+                // 4. Save AI message
+                addDocumentNonBlocking(collection(firestore, 'chatSessions', currentSessionId, 'messages'), {
+                    ...aiMessage,
+                    timestamp: new Date().toISOString()
+                });
+
+                // 5. Update session with captured lead info
+                const capturedData: Partial<{ userType: string; leadEmail: string }> = {};
+                if (result.userType) capturedData.userType = result.userType;
+                if (result.leadEmail) capturedData.leadEmail = result.leadEmail;
+
+                if (Object.keys(capturedData).length > 0) {
+                    const sessionDocRef = doc(firestore, 'chatSessions', currentSessionId);
+                    updateDocumentNonBlocking(sessionDocRef, capturedData);
+                }
+
             } catch (error) {
                 toast({
                     variant: 'destructive',
                     title: 'Chatbot Error',
                     description: 'Failed to get a response. Please try again later.',
                 });
-                // remove the user message if the call fails
                 setMessages(prev => prev.slice(0, -1));
             }
         });

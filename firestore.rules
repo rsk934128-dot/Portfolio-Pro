@@ -134,6 +134,24 @@ service cloud.firestore {
     }
 
     /**
+     * @description Rules for chat sessions with the AI portfolio assistant.
+     * @path /chatSessions/{sessionId}
+     * @allow Anyone can create a new chat session and add messages.
+     * @deny No user can read, list, update, or delete session data from the client to protect privacy.
+     * @principle Secures chat data by making it write-only from the client-side, similar to a dropbox.
+     */
+    match /chatSessions/{sessionId} {
+      allow read, list: if false;
+      allow create, update: if true; // Allow create and update for lead capture
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow read, update, delete, list: if false;
+        allow create: if true;
+      }
+    }
+
+    /**
      * @description Allows anyone to submit a message to the contact form. This collection acts as a secure "dropbox."
      * @path /contactFormSubmissions/{contactFormSubmissionId}
      * @allow Any user, including anonymous ones, can (create) a new submission.

@@ -35,6 +35,7 @@ import { Separator } from "./ui/separator";
 import { useFirestore } from "@/firebase";
 import { portfolioOwnerId } from "@/lib/config";
 import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
+import { Badge } from "./ui/badge";
 
 
 const formSchema = z.object({
@@ -97,7 +98,7 @@ export function BlogAssistant() {
             summary: suggestions.summary,
             content: originalContent,
             publicationDate: new Date().toISOString(),
-            tags: ["AI-Generated"], // Default tag for now
+            tags: suggestions.tags || [],
         });
         toast({
             title: "Post Saved!",
@@ -128,7 +129,7 @@ export function BlogAssistant() {
               AI Blog Assistant
             </SheetTitle>
             <SheetDescription>
-              Paste your blog post content below to get an SEO-friendly title, meta description, and a short summary. Then, save it as a new post.
+              Paste your blog post content below to get an SEO-friendly title, meta description, summary, and tags. Then, save it as a new post.
             </SheetDescription>
           </SheetHeader>
           <div className="py-6">
@@ -205,6 +206,18 @@ export function BlogAssistant() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">{suggestions.summary}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="font-headline text-lg">Suggested Tags</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                        {suggestions.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary">{tag}</Badge>
+                        ))}
+                    </div>
                   </CardContent>
                 </Card>
               </div>

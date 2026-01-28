@@ -20,6 +20,7 @@ const BlogSuggestionsOutputSchema = z.object({
   summary: z.string().describe("A short, engaging summary of the blog post, suitable for a blog listing page (around 2-3 sentences)."),
   seoTitle: z.string().describe("A concise and SEO-friendly title for the blog post (under 60 characters)."),
   metaDescription: z.string().describe("A compelling meta description for search engine results (under 160 characters)."),
+  tags: z.array(z.string()).describe("A list of 3-5 relevant tags or keywords for the blog post."),
 });
 export type BlogSuggestionsOutput = z.infer<typeof BlogSuggestionsOutputSchema>;
 
@@ -37,6 +38,7 @@ Analyze the following blog post content and generate the following:
 1.  A short, engaging summary (2-3 sentences).
 2.  A concise, SEO-friendly title (under 60 characters).
 3.  A compelling meta description for search engines (under 160 characters).
+4.  A list of 3-5 relevant tags or keywords for the blog post.
 
 Blog Post Content:
 {{{content}}}

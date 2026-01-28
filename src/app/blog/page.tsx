@@ -28,14 +28,17 @@ export default function BlogPage() {
   const userRef = useMemo(() => doc(firestore, 'users', portfolioOwnerId), [firestore]);
   const { data: profileData, isLoading: isProfileLoading } = useDoc(userRef);
 
+  const skillsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'skills'), [firestore]);
+  const { data: skillsData, isLoading: areSkillsLoading } = useCollection(skillsRef);
+
   const blogPostsRef = useMemo(() => collection(firestore, 'users', portfolioOwnerId, 'blogPosts'), [firestore]);
   const { data: blogPosts, isLoading: arePostsLoading } = useCollection(blogPostsRef);
 
-  const isLoading = isProfileLoading || arePostsLoading;
+  const isLoading = isProfileLoading || arePostsLoading || areSkillsLoading;
 
   return (
     <div className="flex flex-col min-h-screen">
-        <Header profile={profileData} skills={null} />
+        <Header profile={profileData} skills={skillsData} />
         <main className="flex-1">
             <section className="py-16 md:py-24">
                 <div className="container mx-auto px-4 md:px-6">
@@ -45,7 +48,7 @@ export default function BlogPage() {
                             My thoughts and articles on technology, development, and more.
                         </p>
                         <div className="flex justify-center">
-                            <BlogAssistant />
+                            <BlogAssistant profile={profileData} skills={skillsData} blogPosts={blogPosts} />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

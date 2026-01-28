@@ -2,6 +2,7 @@
 
 import { personalizePortfolio, type PersonalizePortfolioInput, type PersonalizePortfolioOutput } from "@/ai/flows/ai-powered-personalization";
 import { getBlogSuggestions as getBlogSuggestionsFlow, type BlogSuggestionsInput, type BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
+import { getTopicSuggestions as getTopicSuggestionsFlow, type TopicSuggestionsInput, type TopicSuggestionsOutput } from "@/ai/flows/suggest-blog-topics";
 
 export async function getPersonalizationSuggestions(
   input: PersonalizePortfolioInput
@@ -27,4 +28,16 @@ export async function getBlogSuggestions(
     console.error("Error in AI blog suggestion flow:", error);
     throw new Error("Failed to get blog suggestions.");
   }
+}
+
+export async function getTopicSuggestions(
+    input: TopicSuggestionsInput
+): Promise<TopicSuggestionsOutput> {
+    try {
+        const result = await getTopicSuggestionsFlow(input);
+        return result;
+    } catch (error) {
+        console.error("Error in AI topic suggestion flow:", error);
+        throw new Error("Failed to get topic suggestions.");
+    }
 }

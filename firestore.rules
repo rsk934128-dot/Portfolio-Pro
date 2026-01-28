@@ -1,0 +1,165 @@
+/**
+ * This ruleset enforces a strict user-ownership model for a personal portfolio website.
+ * The core philosophy is to isolate user data, ensuring that users can only access and manage their own information.
+ *
+ * Core Philosophy:
+ * Data is segregated into two main categories: private user-owned data and public/semi-public application data.
+ * All user-specific content (profiles, projects, skills, etc.) is stored within a private data tree, making security straightforward and performant.
+ * Publicly readable data (like testimonials) and write-only data (like contact submissions) are stored in separate top-level collections.
+ *
+ * Data Structure:
+ * All private user data is nested under `/users/{userId}`. This path-based ownership is the foundation of the security model.
+ * - /users/{userId}: The user's root profile document.
+ * - /users/{userId}/projects/{projectId}: The user's project portfolio.
+ * - /users/{userId}/skills/{skillId}: The user's skills.
+ * - /users/{userId}/certifications/{certificationId}: The user's certifications.
+ * - /users/{userId}/blogPosts/{blogPostId}: The user's blog posts.
+ * Top-level collections are used for shared or special-purpose data:
+ * - /contactFormSubmissions: A write-only "dropbox" for contact form messages.
+ * - /testimonials: A public collection for testimonials.
+ *
+ * Key Security Decisions:
+ * - Strict Ownership: All data under `/users/{userId}` is accessible only by the authenticated user whose UID matches `{userId}`. This prevents users from viewing or modifying each other's data.
+ * - No User Listing: It is not possible to list all documents in the `/users` collection, protecting user privacy.
+ * - Write-Only Contact Form: Anyone can submit to the `/contactFormSubmissions` collection, but no one can read, update, or delete submissions from the client, protecting the submitter's privacy.
+ * - Public Testimonials: The `/testimonials` collection is publicly readable by anyone, but writes are disabled by default until a secure mechanism (like admin roles or ownership fields) is implemented.
+ *
+ * Denormalization for Authorization:
+ * In this prototyping phase, ownership is primarily determined by the document's path (`/users/{userId}`). For the root user profile, relational integrity is enforced on creation by requiring the document's internal `id` field to match the `{userId}` from the path. This avoids costly lookups and ensures data consistency.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions to improve readability and maintainability.
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the authenticated user's UID matches the provided userId.
+     * This is the primary function for enforcing data ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document.
+     * CRITICAL: Used for all update and delete operations to prevent modifying non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Rules for user profile documents. A user can create their own profile and has full control over it. No other user can access it.
+     * @path /users/{userId}
+     * @allow A signed-in user (auth.uid: 'user123') can (create) their own profile at `/users/user123`.
+     * @deny A signed-in user (auth.uid: 'user456') cannot (get) or (update) the profile at `/users/user123`.
+     * @principle Restricts access to a user's own data tree and enforces relational integrity on creation.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Deny listing all users for privacy.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Rules for a user's projects. Only the owner can manage their own projects.
+       * @path /users/{userId}/projects/{projectId}
+       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/projects`.
+       * @deny User 'user456' is denied all access to documents under `/users/user123/projects`.
+       * @principle Enforces document ownership within a user's private subcollection.
+       */
+      match /projects/{projectId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isExistingOwner(userId);
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Rules for a user's skills. Only the owner can manage their own skills.
+       * @path /users/{userId}/skills/{skillId}
+       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/skills`.
+       * @deny User 'user456' is denied all access to documents under `/users/user123/skills`.
+       * @principle Enforces document ownership within a user's private subcollection.
+       */
+      match /skills/{skillId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isExistingOwner(userId);
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Rules for a user's certifications. Only the owner can manage their own certifications.
+       * @path /users/{userId}/certifications/{certificationId}
+       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/certifications`.
+       * @deny User 'user456' is denied all access to documents under `/users/user123/certifications`.
+       * @principle Enforces document ownership within a user's private subcollection.
+       */
+      match /certifications/{certificationId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isExistingOwner(userId);
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Rules for a user's blog posts. Only the owner can manage their own posts.
+       * @path /users/{userId}/blogPosts/{blogPostId}
+       * @allow User 'user123' can (create), (list), and (delete) documents under `/users/user123/blogPosts`.
+       * @deny User 'user456' is denied all access to documents under `/users/user123/blogPosts`.
+       * @principle Enforces document ownership within a user's private subcollection.
+       */
+      match /blogPosts/{blogPostId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isExistingOwner(userId);
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description Allows anyone to submit a message to the contact form. This collection acts as a secure "dropbox."
+     * @path /contactFormSubmissions/{contactFormSubmissionId}
+     * @allow Any user, including anonymous ones, can (create) a new submission.
+     * @deny No user can (get), (list), (update), or (delete) any submission to protect privacy.
+     * @principle Secures sensitive data by making it write-only from the client-side.
+     */
+    match /contactFormSubmissions/{contactFormSubmissionId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to all testimonials. Writes are disabled pending a secure implementation.
+     * @path /testimonials/{testimonialId}
+     * @allow Any user, including unauthenticated ones, can (get) or (list) testimonials.
+     * @deny No user can (create), (update), or (delete) a testimonial via the client SDK.
+     * @principle Provides public read access while preventing unauthorized modification.
+     */
+    match /testimonials/{testimonialId} {
+      allow get: if true;
+      allow list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Testimonial' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+  }
+}

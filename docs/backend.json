@@ -1,0 +1,386 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile on the portfolio website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user profile."
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biography of the user."
+        },
+        "skills": {
+          "type": "string",
+          "description": "A comma separated string of skills the user has"
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "User's contact email address.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "User's contact phone number."
+        },
+        "contactLinkedIn": {
+          "type": "string",
+          "description": "URL to the user's LinkedIn profile.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "bio",
+        "skills",
+        "contactEmail"
+      ]
+    },
+    "Project": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Project",
+      "type": "object",
+      "description": "Represents a project showcased on the portfolio.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the project."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the project."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the project."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the project's image.",
+          "format": "uri"
+        },
+        "liveUrl": {
+          "type": "string",
+          "description": "URL to the live project (if available).",
+          "format": "uri"
+        },
+        "repositoryUrl": {
+          "type": "string",
+          "description": "URL to the project's code repository (e.g., GitHub).",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "imageUrl"
+      ]
+    },
+    "Skill": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Skill",
+      "type": "object",
+      "description": "Represents a skill listed in the portfolio.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the skill."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the skill (e.g., React, JavaScript)."
+        },
+        "level": {
+          "type": "number",
+          "description": "Proficiency level of the skill (e.g., 1-5).",
+          "format": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "level"
+      ]
+    },
+    "Certification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Certification",
+      "type": "object",
+      "description": "Represents a certification earned by the user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the certification."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the certification."
+        },
+        "authority": {
+          "type": "string",
+          "description": "Issuing authority of the certification (e.g., Coursera, edX)."
+        },
+        "validationUrl": {
+          "type": "string",
+          "description": "URL to validate the certification's authenticity.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "authority",
+        "validationUrl"
+      ]
+    },
+    "ContactFormSubmission": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactFormSubmission",
+      "type": "object",
+      "description": "Represents a submission to the contact form",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact form submission"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the submitter"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email of the submitter",
+          "format": "email"
+        },
+        "message": {
+          "type": "string",
+          "description": "The message body"
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "Date of the submission",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "message",
+        "submissionDate"
+      ]
+    },
+    "Testimonial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Testimonial",
+      "type": "object",
+      "description": "Represents a testimonial about the user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the testimonial."
+        },
+        "author": {
+          "type": "string",
+          "description": "Name of the person giving the testimonial."
+        },
+        "text": {
+          "type": "string",
+          "description": "The testimonial text."
+        },
+        "authorTitle": {
+          "type": "string",
+          "description": "Title of the person giving the testimonial (e.g., CEO, Manager)."
+        },
+        "authorCompany": {
+          "type": "string",
+          "description": "Company of the person giving the testimonial."
+        }
+      },
+      "required": [
+        "id",
+        "author",
+        "text"
+      ]
+    },
+    "BlogPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BlogPost",
+      "type": "object",
+      "description": "Represents a blog post or article.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the blog post."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the blog post."
+        },
+        "content": {
+          "type": "string",
+          "description": "The blog post content (likely HTML or Markdown)."
+        },
+        "publicationDate": {
+          "type": "string",
+          "description": "Date the blog post was published.",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "string",
+          "description": "Tags associated with the blog post (comma-separated)."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "content",
+        "publicationDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. Owned by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/projects/{projectId}",
+        "definition": {
+          "entityName": "Project",
+          "schema": {
+            "$ref": "#/backend/entities/Project"
+          },
+          "description": "Stores projects associated with a specific user. Owned by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the project."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/skills/{skillId}",
+        "definition": {
+          "entityName": "Skill",
+          "schema": {
+            "$ref": "#/backend/entities/Skill"
+          },
+          "description": "Stores skills associated with a specific user. Owned by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "skillId",
+              "description": "The unique identifier of the skill."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/certifications/{certificationId}",
+        "definition": {
+          "entityName": "Certification",
+          "schema": {
+            "$ref": "#/backend/entities/Certification"
+          },
+          "description": "Stores certifications associated with a specific user. Owned by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "certificationId",
+              "description": "The unique identifier of the certification."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/blogPosts/{blogPostId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/backend/entities/BlogPost"
+          },
+          "description": "Stores blog posts or articles written by the user. Owned by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier of the blog post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/contactFormSubmissions/{contactFormSubmissionId}",
+        "definition": {
+          "entityName": "ContactFormSubmission",
+          "schema": {
+            "$ref": "#/backend/entities/ContactFormSubmission"
+          },
+          "description": "Stores contact form submissions from users.",
+          "params": [
+            {
+              "name": "contactFormSubmissionId",
+              "description": "The unique identifier of the contact form submission."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/testimonials/{testimonialId}",
+        "definition": {
+          "entityName": "Testimonial",
+          "schema": {
+            "$ref": "#/backend/entities/Testimonial"
+          },
+          "description": "Stores testimonials about the user.",
+          "params": [
+            {
+              "name": "testimonialId",
+              "description": "The unique identifier of the testimonial."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure prioritizes authorization independence and QAPs using denormalization. User profiles, projects, skills, certifications, and blog posts are stored under a user-specific path (`/users/{userId}`). This path-based ownership simplifies security rules and enables secure list operations. Contact form submissions and testimonials are stored in root-level collections, as they have different security needs. The data structure recommendation will also include the use of denormalized fields where appropriate to maintain Authorization Independence, specifically with the UserProfile data."
+  }
+}

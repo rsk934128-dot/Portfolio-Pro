@@ -9,6 +9,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { SkillsSection } from "@/components/sections/skills-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { CertificationsSection } from "@/components/sections/certifications-section";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { Footer } from "@/components/layout/footer";
 import { ContactSection } from "@/components/sections/contact-section";
 
@@ -27,6 +28,9 @@ export default function Home() {
   const certificationsRef = useMemoFirebase(() => collection(firestore, 'users', portfolioOwnerId, 'certifications'), [firestore]);
   const { data: certificationsData, isLoading: areCertificationsLoading } = useCollection(certificationsRef);
 
+  const testimonialsRef = useMemoFirebase(() => collection(firestore, 'testimonials'), [firestore]);
+  const { data: testimonialsData, isLoading: areTestimonialsLoading } = useCollection(testimonialsRef);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header profile={profileData} skills={skillsData} />
@@ -35,6 +39,7 @@ export default function Home() {
         <SkillsSection skills={skillsData} isLoading={areSkillsLoading} />
         <ProjectsSection projects={projectsData} isLoading={areProjectsLoading} />
         <CertificationsSection certifications={certificationsData} isLoading={areCertificationsLoading} />
+        <TestimonialsSection testimonials={testimonialsData} isLoading={areTestimonialsLoading} />
         <ContactSection />
       </main>
       <Footer profile={profileData} isLoading={isProfileLoading} />

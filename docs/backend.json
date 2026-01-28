@@ -168,7 +168,6 @@
         }
       },
       "required": [
-        "id",
         "name",
         "email",
         "message",
@@ -203,7 +202,6 @@
         }
       },
       "required": [
-        "id",
         "author",
         "text"
       ]
@@ -237,7 +235,6 @@
         }
       },
       "required": [
-        "id",
         "title",
         "content",
         "publicationDate"

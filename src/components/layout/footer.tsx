@@ -2,7 +2,7 @@ import { profile } from "@/lib/data";
 
 export function Footer() {
   return (
-    <footer id="contact" className="bg-secondary text-secondary-foreground py-8">
+    <footer className="bg-secondary text-secondary-foreground py-8">
       <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center gap-4 mb-4 md:mb-0">
           {profile.contact.social.map((social) => (

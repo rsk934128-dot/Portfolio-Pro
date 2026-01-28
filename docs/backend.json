@@ -288,6 +288,74 @@
         "content",
         "publicationDate"
       ]
+    },
+    "ChatSession": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatSession",
+      "type": "object",
+      "description": "Represents a single chat session with the AI portfolio assistant.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat session."
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the session started."
+        },
+        "userType": {
+          "type": "string",
+          "enum": [
+            "visitor",
+            "recruiter",
+            "other"
+          ],
+          "description": "The type of user interacting with the chatbot."
+        },
+        "leadEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address captured from the user, if provided."
+        }
+      },
+      "required": [
+        "id",
+        "startTime"
+      ]
+    },
+    "ChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatMessage",
+      "type": "object",
+      "description": "Represents a single message within a chat session.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "user",
+            "model"
+          ],
+          "description": "Who sent the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "content",
+        "timestamp"
+      ]
     }
   },
   "auth": {
@@ -422,6 +490,26 @@
             {
               "name": "testimonialId",
               "description": "The unique identifier of the testimonial."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/chatSessions/{sessionId}/messages/{messageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Stores individual messages for a given chat session.",
+          "params": [
+            {
+              "name": "sessionId",
+              "description": "The unique identifier of the chat session."
+            },
+            {
+              "name": "messageId",
+              "description": "The unique identifier of the message."
             }
           ]
         }

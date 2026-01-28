@@ -4,6 +4,8 @@ import { personalizePortfolio, type PersonalizePortfolioInput, type PersonalizeP
 import { getBlogSuggestions as getBlogSuggestionsFlow, type BlogSuggestionsInput, type BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
 import { getTopicSuggestions as getTopicSuggestionsFlow, type TopicSuggestionsInput, type TopicSuggestionsOutput } from "@/ai/flows/suggest-blog-topics";
 import { getBlogPerformanceAnalysis as getBlogPerformanceAnalysisFlow, type BlogPerformanceAnalysisInput, type BlogPerformanceAnalysisOutput } from "@/ai/flows/analyze-blog-performance";
+import { getChatbotResponse as getChatbotResponseFlow, type ChatbotInput } from "@/ai/flows/portfolio-chatbot";
+
 
 export async function getPersonalizationSuggestions(
   input: PersonalizePortfolioInput
@@ -52,5 +54,17 @@ export async function getBlogPerformanceAnalysis(
     } catch (error) {
         console.error("Error in AI blog performance analysis flow:", error);
         throw new Error("Failed to get blog performance analysis.");
+    }
+}
+
+export async function getChatbotResponse(
+    input: ChatbotInput
+): Promise<string> {
+    try {
+        const result = await getChatbotResponseFlow(input);
+        return result;
+    } catch (error) {
+        console.error("Error in AI chatbot flow:", error);
+        throw new Error("Failed to get chatbot response.");
     }
 }

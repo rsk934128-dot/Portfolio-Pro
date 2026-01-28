@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, Sparkles, PencilRuler } from "lucide-react";
+import { Loader2, Sparkles, PencilRuler, Save } from "lucide-react";
+import { collection } from "firebase/firestore";
 
 import {
   Sheet,
@@ -31,6 +32,10 @@ import { useToast } from "@/hooks/use-toast";
 import { getBlogSuggestions } from "@/app/actions";
 import type { BlogSuggestionsOutput } from "@/ai/flows/summarize-blog-post";
 import { Separator } from "./ui/separator";
+import { useFirestore } from "@/firebase";
+import { portfolioOwnerId } from "@/lib/config";
+import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
+
 
 const formSchema = z.object({
   content: z
@@ -41,9 +46,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function BlogAssistant() {
-  const [isPending, startTransition] = useTransition();
+  const [isGenerating, startGenerationTransition] = useTransition();
+  const [isSaving, startSavingTransition] = useTransition();
   const { toast } = useToast();
   const [suggestions, setSuggestions] = useState<BlogSuggestionsOutput | null>(null);
+  const [originalContent, setOriginalContent] = useState<string>('');
+  const firestore = useFirestore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -53,12 +61,15 @@ export function BlogAssistant() {
   });
 
   const onSubmit = (values: FormValues) => {
-    startTransition(async () => {
+    startGenerationTransition(async () => {
+      setSuggestions(null);
+      setOriginalContent('');
       try {
         const result = await getBlogSuggestions({
           content: values.content,
         });
         setSuggestions(result);
+        setOriginalContent(values.content);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -69,8 +80,40 @@ export function BlogAssistant() {
     });
   };
 
+  const handleSavePost = () => {
+    if (!suggestions || !originalContent || !firestore) {
+        toast({
+            variant: "destructive",
+            title: "Cannot Save Post",
+            description: "Generated suggestions or original content is missing. Please generate suggestions first.",
+        });
+        return;
+    }
+
+    startSavingTransition(() => {
+        const blogPostsRef = collection(firestore, 'users', portfolioOwnerId, 'blogPosts');
+        addDocumentNonBlocking(blogPostsRef, {
+            title: suggestions.seoTitle,
+            summary: suggestions.summary,
+            content: originalContent,
+            publicationDate: new Date().toISOString(),
+            tags: ["AI-Generated"], // Default tag for now
+        });
+        toast({
+            title: "Post Saved!",
+            description: `${suggestions.seoTitle} has been saved.`
+        });
+        // Reset state after saving
+        setSuggestions(null);
+        setOriginalContent("");
+        form.reset();
+    });
+  }
+
+  const isPending = isGenerating || isSaving;
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={(open) => { if (!open) { setSuggestions(null); setOriginalContent(''); form.reset(); }}}>
       <SheetTrigger asChild>
           <Button variant="outline">
               <PencilRuler className="mr-2" />
@@ -85,7 +128,7 @@ export function BlogAssistant() {
               AI Blog Assistant
             </SheetTitle>
             <SheetDescription>
-              Paste your blog post content below to get an SEO-friendly title, meta description, and a short summary.
+              Paste your blog post content below to get an SEO-friendly title, meta description, and a short summary. Then, save it as a new post.
             </SheetDescription>
           </SheetHeader>
           <div className="py-6">
@@ -102,6 +145,7 @@ export function BlogAssistant() {
                           placeholder="Paste your full blog post content here..."
                           rows={10}
                           {...field}
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormDescription>
@@ -112,8 +156,11 @@ export function BlogAssistant() {
                   )}
                 />
                 <Button type="submit" disabled={isPending} className="w-full">
-                  {isPending ? (
-                    <Loader2 className="animate-spin" />
+                  {isGenerating ? (
+                    <>
+                        <Loader2 className="animate-spin mr-2" />
+                        Generating...
+                    </>
                   ) : (
                     "Generate Suggestions"
                   )}
@@ -122,11 +169,11 @@ export function BlogAssistant() {
             </Form>
           </div>
 
-          {isPending && (
+          {isGenerating && (
              <div className="space-y-4 pt-6">
                 <p className="text-center text-muted-foreground flex items-center justify-center gap-2">
                     <Loader2 className="animate-spin h-4 w-4"/>
-                    Generating AI suggestions... this may take a moment.
+                    Analyzing your content... this may take a moment.
                 </p>
             </div>
           )}
@@ -161,6 +208,19 @@ export function BlogAssistant() {
                   </CardContent>
                 </Card>
               </div>
+              <Button onClick={handleSavePost} disabled={isSaving} className="w-full">
+                {isSaving ? (
+                    <>
+                        <Loader2 className="animate-spin mr-2" />
+                        Saving Post...
+                    </>
+                ) : (
+                    <>
+                        <Save className="mr-2" />
+                        Save as New Post
+                    </>
+                )}
+              </Button>
             </div>
           )}
         </ScrollArea>
